@@ -7,7 +7,7 @@ public class Methodes {
     public static void generationPlateau(char[][] plateau){
         for (int ligne = 0; ligne < plateau.length; ligne++) {
             for (int col = 0; col < plateau[ligne].length; col++) {
-                plateau[ligne][col] = '0';
+                plateau[ligne][col] = '~';
             }
         }
         for (int col = 0; col < plateau[0].length;col++){
@@ -84,6 +84,32 @@ public class Methodes {
         }
         if (choixBat == 1){
             System.out.println("Choisir la position de placement de votre Porte-avions (verticale: v ou horizontal: h): ");
+        }
+    }
+
+
+    public static void placementNavire(char[][] plateau, int taille, int x, int y, char direction){
+
+        if (plateau.length < y + 5 || plateau[0].length < x + 5){
+            System.out.println("Placement invalide!");
+        }
+        else {
+            for (int ligne = 0; ligne < plateau.length; ligne++) {
+                for (int col = 0; col < plateau[ligne].length; col++) {
+                    if (ligne == y && col == (x - 1)) {
+                        if (direction == 'h') {
+                            for (int i = 0; i < taille; i++) {
+                                plateau[ligne][col + i] = 'B';
+                            }
+                        }
+                        else{
+                            for (int i = 0; i < taille; i++) {
+                                plateau[ligne+i][col] = 'B';
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
