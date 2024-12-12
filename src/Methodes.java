@@ -87,7 +87,24 @@ public class Methodes {
         }
     }
 
-
+    public static void placementNavireJoueur(String joueur, char [][]plateau){
+            int[] tailleNavire = {5, 4, 3, 3, 2}; // Longueurs des bateaux
+            for (int taille : tailleNavire) {
+                boolean estplacer = false;
+                while (!estplacer) {
+                    System.out.println(joueur + ", placez un navire de taille " + taille + " (format : A1) :");
+                    String position = scanner.next().toUpperCase();
+                    System.out.println("direction ?");
+                    char direction = scanner.next().toLowerCase().charAt(0);
+    
+                    int y = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+                    int x = position.charAt(0) - 'A';
+    
+    
+                    placementNavire(plateau, taille, x, y, direction);
+                }
+            }
+        }
     public static void placementNavire(char[][] plateau, int taille, int x, int y, char direction){
 
         if ( ((plateau.length < y + taille) && (direction=='v')) || ((plateau[0].length < x + taille) && (direction == 'h')) ){
