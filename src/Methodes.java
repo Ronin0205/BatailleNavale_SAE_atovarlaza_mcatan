@@ -88,8 +88,29 @@ public class Methodes {
     }
 
 
-    if ( ((plateau.length < y + taille) && (direction=='v')) || ((plateau[0].length < x + taille) && (direction == 'h')) ){
+    public static void placementNavire(char[][] plateau, int taille, int x, int y, char direction){
+
+        if ( ((plateau.length < y + taille) && (direction=='v')) || ((plateau[0].length < x + taille) && (direction == 'h')) ){
             System.out.println("Placement invalide!");
         }
+        else {
+            for (int ligne = 0; ligne < plateau.length; ligne++) {
+                for (int col = 0; col < plateau[ligne].length; col++) {
+                    if (ligne == y && col == (x - 1)) {
+                        if (direction == 'h') {
+                            for (int i = 0; i < taille; i++) {
+                                plateau[ligne][col + i] = 'B';
+                            }
+                        }
+                        else{
+                            for (int i = 0; i < taille; i++) {
+                                plateau[ligne+i][col] = 'B';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }
