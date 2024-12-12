@@ -129,5 +129,16 @@ public class Methodes {
             }
         }
     }
+    //rajouté par marvin
+    public static boolean tousCoulés(char[][] plateau){
+        for (int i = 0; plateau.length < 10; i++) {
+            for (int j = 0; plateau[i].length < 10; j++) {
+                if (plateau[i][j] == 'B') {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 }
