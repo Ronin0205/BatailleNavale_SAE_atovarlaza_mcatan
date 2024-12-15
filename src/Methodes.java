@@ -30,6 +30,7 @@ public class Methodes {
             System.out.print("\u001B[0m");
             System.out.println();
         }
+        System.out.println();
     }
 //System.out.print(plateau[i][j] + "  ");
 
@@ -52,7 +53,7 @@ public class Methodes {
                 "2. Redécouvrir les règles\n" +
                 "3. Quitter\n");
 
-        System.out.print("==>");
+        System.out.print("==>  ");
         int choix=0;
         choix = scanner.nextInt();
         switch (choix){
@@ -132,7 +133,7 @@ public class Methodes {
         System.out.println("1. Lancez une partie");
         System.out.println("2. Quittez");
         System.out.println();
-        System.out.print("=>");
+        System.out.print("=>  ");
         choix = scanner.nextInt();
 
         switch (choix){
