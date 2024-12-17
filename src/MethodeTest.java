@@ -39,4 +39,33 @@ public class MethodeTest {
 
 
     }
+
+    @Test
+    public final void testTousCoules() {
+
+        char[][] plateauVide = new char[10][10];
+        Methodes.generationPlateau(plateauVide);
+        assertTrue(Methodes.tousCoulés(plateauVide), "plateau vide = pas de bateau");
+
+        char[][] plateauAvecNavires = new char[10][10];
+        Methodes.generationPlateau(plateauAvecNavires);
+        plateauAvecNavires[2][2] = 'B';
+        plateauAvecNavires[2][3] = 'B';
+        plateauAvecNavires[5][5] = 'B';
+        assertFalse(Methodes.tousCoulés(plateauAvecNavires), "pas tous coulés");
+
+        char[][] plateauTousCoulés = new char[10][10];
+        Methodes.generationPlateau(plateauTousCoulés);
+        plateauTousCoulés[2][2] = 'X';
+        plateauTousCoulés[2][3] = 'X';
+        plateauTousCoulés[5][5] = 'X';
+        assertTrue(Methodes.tousCoulés(plateauTousCoulés), "tous coulés");
+
+        char[][] plateauMixte = new char[10][10];
+        Methodes.generationPlateau(plateauMixte);
+        plateauMixte[2][2] = 'B';
+        plateauMixte[2][3] = 'X';
+        plateauMixte[5][5] = 'X';
+        assertFalse(Methodes.tousCoulés(plateauMixte), "mixte");
+    }
 }
