@@ -31,11 +31,10 @@ public class MethodeTest {
 
         // pas encore prêt
         //
-//        //Placement hors limites horizontal
-//        assertFalse(Methodes.placementNavire(plateau, 5, 8, 0, 'h'));
-//
-//        //Placement hors limites vertical
-//        assertFalse(Methodes.placementNavire(plateau, 6, 0, 8, 'v'));
+        //Placement hors limites horizontal
+        assertFalse(Methodes.placementNavire(plateau, 5, 8, 0, 'h'));
+       //Placement hors limites vertical
+        assertFalse(Methodes.placementNavire(plateau, 6, 0, 8, 'v'));
 
 
     }

@@ -57,7 +57,7 @@ public class Methodes {
         int choix=0;
         choix = scanner.nextInt();
         switch (choix){
-            case 1: Methodes.avantPartie();break;
+            case 1: Methodes.preparationPartie();break;
             case 2:Methodes.regles();
         }
     }
@@ -137,10 +137,10 @@ public class Methodes {
         choix = scanner.nextInt();
 
         switch (choix){
-            case 1:avantPartie();break;
+            case 1:preparationPartie();break;
         }
     }
-    public static void avantPartie(){
+    public static void preparationPartie(){
         System.out.println();
         afficherPlateau(GestionBatailleNaval.plateaujoueur1);
         placementNavireJoueur("Joueur 1", GestionBatailleNaval.plateaujoueur1);
@@ -186,21 +186,22 @@ public class Methodes {
     }
 
     public static boolean placementNavire(char[][] plateau, int taille, int x, int y, char direction){
-        for (int i = 0; i < taille; i++) {
-            if (direction == 'h' && plateau[y][x + i] == 'B') {
-                System.out.println("Collision détectée!");
-                return false;
-            }
-            if (direction == 'v' && plateau[y + i][x] == 'B') {
-                System.out.println("Collision détectée!");
-                return false;
-            }
-        }
+
         if ( ((plateau.length < y + taille) && (direction=='v')) || ((plateau[0].length < x + taille) && (direction == 'h'))  ){
             System.out.println("Placement invalide!");
             return false;
         }
         else {
+            for (int i = 0; i < taille; i++) {
+                if (direction == 'h' && plateau[y][x + i] == 'B') {
+                    System.out.println("Collision détectée!");
+                    return false;
+                }
+                if (direction == 'v' && plateau[y + i][x] == 'B') {
+                    System.out.println("Collision détectée!");
+                    return false;
+                }
+            }
             for (int ligne = 0; ligne < plateau.length; ligne++) {
                 for (int col = 0; col < plateau[ligne].length; col++) {
                     if (ligne == y && col == x) {
@@ -236,6 +237,10 @@ public class Methodes {
         for (int i = 0; i < 200; i++) {
             System.out.println();
         }
+    }
+
+    public static void gestionTour(){
+
     }
 
 }
