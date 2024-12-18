@@ -262,15 +262,79 @@ public class Methodes {
     }
     //rajouté par marvin
     public static boolean tousCoulés(char[][] plateau){
-        for (int i = 0;i< plateau.length; i++) {
-            for (int j = 0; i<plateau[i].length; j++) {
-                if (plateau[i][j] == 'B') {
+        if(CoulésPorteAvion(plateau) && CoulésContreTorpilleur(plateau) && CoulésTorpilleur(plateau) && CoulésCroiseur(plateau)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public static boolean unContreTorpilleurCoulés(char[][]plateau){
+        int compteur = 0;
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='c'){
+                    compteur++;
+                }
+            }
+        }
+        if (compteur>=3){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    public static boolean CoulésContreTorpilleur(char[][] plateau){
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='c'){
                     return false;
                 }
             }
         }
         return true;
     }
+    public static boolean CoulésPorteAvion(char[][] plateau){
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='P'){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static boolean CoulésCroiseur(char[][] plateau){
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='C'){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    public static boolean CoulésTorpilleur(char[][] plateau){
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='T'){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+
+    public static void espaceEntrePlacementJoueur(){
+        for (int i = 0; i < 200; i++) {
+            System.out.println();
+        }
+    }
+    
     
 
     public static void espaceEntrePlacementJoueur(){
