@@ -168,10 +168,17 @@ public class Methodes {
                 typeNavire="le torpilleur";
             }
             while (!estplacer) {
-                System.out.println(joueur + ", placez " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
-                String position = scanner.next().toUpperCase();
-                System.out.println("sens ? (h/v)");
-                char direction = scanner.next().toLowerCase().charAt(0);
+                String position;
+                do {
+                   System.out.println(joueur + ", placez " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
+                   position = scanner.next().toUpperCase();
+                } while (position.length() != 2);
+
+                char direction;
+                do {
+                    System.out.println("sens ? (h/v)");
+                    direction = scanner.next().toLowerCase().charAt(0);
+                }while (direction != 'v' && direction != 'h');
 
                 int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
                 int c = position.charAt(0) - 'A';
@@ -184,7 +191,6 @@ public class Methodes {
             afficherPlateau(plateau);
         }
     }
-
     public static boolean placementNavire(char[][] plateau, int taille, int c, int li, char direction){
 
         if ( ((plateau.length < li + taille) && (direction=='v')) || ((plateau[0].length < c + taille) && (direction == 'h'))  ){
