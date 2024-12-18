@@ -32,7 +32,6 @@ public class Methodes {
         }
         System.out.println();
     }
-//System.out.print(plateau[i][j] + "  ");
 
     public static void menu(){
         String marron = "\u001B[33m"; // Couleur marron
@@ -170,8 +169,8 @@ public class Methodes {
             while (!estplacer) {
                 String position;
                 do {
-                   System.out.println(joueur + ", placez " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
-                   position = scanner.next().toUpperCase();
+                    System.out.println(joueur + ", placez " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
+                    position = scanner.next().toUpperCase();
                 } while (position.length() != 2);
 
                 char direction;
@@ -198,16 +197,17 @@ public class Methodes {
             return false;
         }
         else {
-            for (int i = 0; i < taille; i++) {
-                if (direction == 'h' && plateau[li][c + i] == 'B') {
-                    System.out.println("Collision détectée!");
-                    return false;
-                }
-                if (direction == 'v' && plateau[li + i][c] == 'B') {
-                    System.out.println("Collision détectée!");
-                    return false;
-                }
-            }
+//              A corriger
+//            for (int i = 0; i < taille; i++) {
+//                if (direction == 'h' && plateau[li][c + i] == 'C' || direction == 'h' && plateau[li][c + i] == 'c' || direction == 'h' && plateau[li][c + i] == 'T') {
+//                    System.out.println("Collision détectée!");
+//                    return false;
+//                }
+//                if (direction == 'v' && plateau[li][c + i] == 'C' || direction == 'v' && plateau[li][c + i] == 'v' || direction == 'v' && plateau[li][c + i] == 'T') {
+//                    System.out.println("Collision détectée!");
+//                    return false;
+//                }
+//            }
 
             //placement porte avion
             if (taille==5){
@@ -266,14 +266,51 @@ public class Methodes {
         }
         return true;
     }
-    //rajouté par marvin
+
     public static boolean tousCoulés(char[][] plateau){
-        if(CoulésPorteAvion(plateau) && CoulésContreTorpilleur(plateau) && CoulésTorpilleur(plateau) && CoulésCroiseur(plateau)){
-            return true;
+        boolean tousValide=false;
+        boolean porteAvionCoules=true;
+        boolean croiseurCoules=true;
+        boolean contreTorpilleurCoules=true;
+        boolean torpilleurCoules=true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='P'){
+                    porteAvionCoules=false;
+                }
+            }
         }
-        else {
-            return false;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='C'){
+                    croiseurCoules=false;
+                }
+            }
         }
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='c'){
+                    contreTorpilleurCoules=false;
+                }
+            }
+        }
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j]=='T'){
+                    torpilleurCoules=false;
+                }
+            }
+        }
+
+        if (porteAvionCoules && croiseurCoules && contreTorpilleurCoules && torpilleurCoules){
+            tousValide=true;
+        }
+
+        return tousValide;
     }
 
     public static boolean unContreTorpilleurCoulés(char[][]plateau){
@@ -292,69 +329,7 @@ public class Methodes {
             return false;
         }
     }
-    public static boolean CoulésContreTorpilleur(char[][] plateau){
-        boolean valide = true;
 
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='c'){
-                    valide = false;
-                }
-            }
-        }
-        if (valide){
-            System.out.println("Contre Torpilleur coulée");
-        }
-        return valide;
-    }
-    public static boolean CoulésPorteAvion(char[][] plateau){
-        boolean valide = true;
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='P'){
-                    valide = false;
-                }
-            }
-        }
-        if (valide){
-            System.out.println("Porte-Avion coulée");
-        }
-
-        return valide;
-    }
-
-    public static boolean CoulésCroiseur(char[][] plateau){
-        boolean valide = true;
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='C'){
-                    valide = false;
-                }
-            }
-        }
-        if (valide){
-            System.out.println("Croiseur coulée");
-        }
-        return valide;
-    }
-    public static boolean CoulésTorpilleur(char[][] plateau){
-        boolean valide = true;
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='T'){
-                    valide = false;
-                }
-            }
-        }
-        if (valide){
-            System.out.println("Torpilleur coulée");
-        }
-        return valide;
-    }
-    
 
     public static void espaceEntrePlacementJoueur(){
         for (int i = 0; i < 200; i++) {
@@ -383,32 +358,111 @@ public class Methodes {
     public static void gestionTour(char[][] plateauJoueur1,char[][] plateauJoueur2,char[][] plateauJoueur1cachee,char[][] plateauJoueur2cachee){
         int i = 1;
 
-        while(!tousCoulés(plateauJoueur1cachee) && !tousCoulés(plateauJoueur2cachee)){
+        while(!tousCoulés(plateauJoueur1) && !tousCoulés(plateauJoueur2)){
             System.out.println("Tour " + i + ": ");
             if (i % 2 != 0){
                 System.out.println("Joueur 1 --");
                 afficherPlateau(plateauJoueur2cachee);
                 gestionTir(plateauJoueur2, plateauJoueur2cachee);
                 afficherPlateau(plateauJoueur2cachee);
-                verifierCoules(plateauJoueur2);
+                afichageCoules(plateauJoueur2);
             }
             else {
                 System.out.println("Joueur 2 --");
                 afficherPlateau(plateauJoueur1cachee);
                 gestionTir(plateauJoueur1,plateauJoueur1cachee);
                 afficherPlateau(plateauJoueur1cachee);
-                verifierCoules(plateauJoueur1);
+                afichageCoules(plateauJoueur1);
             }
 
             i++;
         }
     }
 
-    public static void verifierCoules(char[][] plateau){
-        CoulésPorteAvion(plateau);
-        CoulésCroiseur(plateau);
-        CoulésContreTorpilleur(plateau);
-        CoulésTorpilleur(plateau);
+    public static void afichageCoules(char [][]plateau){
+        affichageCoulesPorteAvion(plateau);
+        affichageCoulesCroiseur(plateau);
+        affichageCoulesContreTorpilleur(plateau);
+        affichageCoulesTorpilleur(plateau);
+    }
+
+    public static void affichageCoulesPorteAvion (char[][] plateau){
+        boolean coules = true;
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'P') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+        if (coules) {
+            System.out.println("Le Porte avion a été coulé.");
+        }
+    }
+
+    public static void affichageCoulesCroiseur(char[][] plateau){
+        boolean coules = true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'C') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+
+        if (coules) {
+            System.out.println("Le Croiseur a été coulé.");
+        }
+    }
+
+    public static void affichageCoulesContreTorpilleur(char[][] plateau) {
+        boolean coules = true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'c') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+
+        if (coules) {
+            System.out.println("Le Contre-Torpilleur a été coulé.");
+        }
+    }
+
+
+    public static void affichageCoulesTorpilleur (char[][] plateau){
+        boolean coules = true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'T') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+
+        if (coules) {
+            System.out.println("Le Torpilleur a été coulé.");
+        }
     }
 
 //    public static void placementAutomatiqueNavire(char[][] plateauJoueur1,char[][] plateauJoueur2){
