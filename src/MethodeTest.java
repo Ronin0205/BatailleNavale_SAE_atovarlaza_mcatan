@@ -2,69 +2,80 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 public class MethodeTest {
+
     @Test
-    public final void placementNavire() {
-        // Plateau vide de 10x10
-        char[][] plateau = new char[10][10];
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                plateau[i][j] = '~';
-            }
-        }
+    public void testTousCoules() {
 
-        //bon placement horizontal
-        assertTrue(Methodes.placementNavire(plateau, 3, 2, 2, 'h'));
-        assertEquals('B', plateau[2][2]);
-        assertEquals('B', plateau[2][3]);
-        assertEquals('B', plateau[2][4]);
+        char[][] plateau1 = {
+                {'~', '~', '~'},
+                {'~', '~', '~'},
+                {'~', '~', '~'}
+        };
+        assertTrue(Methodes.tousCoulés(plateau1), "Tous les navires sont coulés, devrait retourner true.");
 
-        //bon Placement vertical
-        assertTrue(Methodes.placementNavire(plateau, 4, 5, 5, 'v'));
-        assertEquals('B', plateau[5][5]);
-        assertEquals('B', plateau[6][5]);
-        assertEquals('B', plateau[7][5]);
-        assertEquals('B', plateau[8][5]);
+        char[][] plateau2 = {
+                {'P', 'C', 'T'},
+                {'C', 'T', 'C'},
+                {'T', 'P', 'C'}
+        };
+        assertFalse(Methodes.tousCoulés(plateau2), "Aucun navire n'est coulé, devrait retourner false.");
 
-        //collision
-        assertFalse(Methodes.placementNavire(plateau, 3, 2, 2, 'h')); // Navire déjà placé ici
+        char[][] plateau3 = {
+                {'~', '~', '~'},
+                {'~', 'C', '~'},
+                {'~', '~', '~'}
+        };
+        assertFalse(Methodes.tousCoulés(plateau3), "Un navire n'est pas coulé, devrait retourner false.");
 
-
-        // pas encore prêt
-        //
-        //Placement hors limites horizontal
-        assertFalse(Methodes.placementNavire(plateau, 5, 8, 0, 'h'));
-       //Placement hors limites vertical
-        assertFalse(Methodes.placementNavire(plateau, 6, 0, 8, 'v'));
-
-
+        char[][] plateau4 = {
+                {'P', '~', '~'},
+                {'~', 'C', '~'},
+                {'~', '~', 'T'}
+        };
+        assertFalse(Methodes.tousCoulés(plateau4), "Des navires sont encore sur le plateau, devrait retourner false.");
     }
 
     @Test
-    public final void testTousCoules() {
+    public void testPlacementNavire() {
+        char[][] plateau1 = new char[10][10];
+        Methodes.generationPlateau(plateau1);
 
-        char[][] plateauVide = new char[10][10];
-        Methodes.generationPlateau(plateauVide);
-        assertTrue(Methodes.tousCoulés(plateauVide), "plateau vide = pas de bateau");
+        assertTrue(Methodes.placementNavire(plateau1, 3, 1, 2, 'h'), "Placement horizontal valide, devrait retourner true.");
+        assertEquals('c', plateau1[2][1], "Le navire doit être correctement placé à la position [2][1].");
+        assertEquals('c', plateau1[2][2], "Le navire doit être correctement placé à la position [2][2].");
+        assertEquals('c', plateau1[2][3], "Le navire doit être correctement placé à la position [2][3].");
 
-        char[][] plateauAvecNavires = new char[10][10];
-        Methodes.generationPlateau(plateauAvecNavires);
-        plateauAvecNavires[2][2] = 'B';
-        plateauAvecNavires[2][3] = 'B';
-        plateauAvecNavires[5][5] = 'B';
-        assertFalse(Methodes.tousCoulés(plateauAvecNavires), "pas tous coulés");
 
-        char[][] plateauTousCoulés = new char[10][10];
-        Methodes.generationPlateau(plateauTousCoulés);
-        plateauTousCoulés[2][2] = 'X';
-        plateauTousCoulés[2][3] = 'X';
-        plateauTousCoulés[5][5] = 'X';
-        assertTrue(Methodes.tousCoulés(plateauTousCoulés), "tous coulés");
+        char[][] plateau2 = new char[10][10];
+        Methodes.generationPlateau(plateau2);
 
-        char[][] plateauMixte = new char[10][10];
-        Methodes.generationPlateau(plateauMixte);
-        plateauMixte[2][2] = 'B';
-        plateauMixte[2][3] = 'X';
-        plateauMixte[5][5] = 'X';
-        assertFalse(Methodes.tousCoulés(plateauMixte), "mixte");
+        assertTrue(Methodes.placementNavire(plateau2, 4, 2, 0, 'v'), "Placement vertical valide, devrait retourner true.");
+        assertEquals('C', plateau2[0][2], "Le navire doit être correctement placé à la position [0][2].");
+        assertEquals('C', plateau2[1][2], "Le navire doit être correctement placé à la position [1][2].");
+        assertEquals('C', plateau2[2][2], "Le navire doit être correctement placé à la position [2][2].");
+        assertEquals('C', plateau2[3][2], "Le navire doit être correctement placé à la position [3][2].");
+
+
+
+        char[][] plateau3 = new char[10][10];
+        Methodes.generationPlateau(plateau3);
+        Methodes.placementNavire(plateau3, 4, 1, 2, 'h');
+
+        assertFalse(Methodes.placementNavire(plateau3, 3, 1, 2, 'h'), "Collision détectée, devrait retourner false.");
+
+
+
+        char[][] plateau4 = new char[10][10];
+        Methodes.generationPlateau(plateau4);
+
+        assertFalse(Methodes.placementNavire(plateau4, 5, 10, 2, 'h'), "Placement hors limites horizontal, devrait retourner false.");
+
+
+
+        char[][] plateau5 = new char[10][10];
+        Methodes.generationPlateau(plateau5);
+
+        assertFalse(Methodes.placementNavire(plateau5, 5, 2, 10, 'v'), "Placement hors limites vertical, devrait retourner false.");
     }
+
 }
