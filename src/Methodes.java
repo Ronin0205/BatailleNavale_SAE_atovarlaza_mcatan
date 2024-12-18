@@ -10,7 +10,6 @@ public class Methodes {
         }
     }
 
-
     public static void afficherPlateau(char[][] plateau){
         int compteur =1;
         System.out.println("    "+"A  "+"B  "+"C  "+"D  "+"E  "+"F  "+"G  "+"H  "+"I  "+"J");
@@ -21,9 +20,24 @@ public class Methodes {
                 if (plateau[i][j] == '~') {
                     System.out.print("\u001B[34m~" + "  ");
                 }
-                else if (plateau[i][j] == 'B') {
-                    System.out.print("\u001B[33mB" + "  ");
-                } else {
+                else if (plateau[i][j] == 'P') {
+                    System.out.print("\u001B[33mP" + "  "); // a modifier
+                }
+                else if (plateau[i][j] == 'C') {
+                    System.out.print("\u001B[33mC" + "  "); // a modifier
+                }
+                else if (plateau[i][j] == 'c') {
+                    System.out.print("\u001B[33mc" + "  "); // a modifier
+                }
+                else if (plateau[i][j] == 'T') {
+                    System.out.print("\u001B[33mT" + "  "); // a modifier
+                }
+                else if (plateau[i][j] == 'X') {
+                    System.out.print("\u001B[31mX" + "  ");                }
+                else if (plateau[i][j] == 'O') {
+                    System.out.print("\u001B[32m0" + "  ");
+                }
+                else {
                     System.out.print(plateau[i][j] + "  ");
                 }
             }
@@ -59,6 +73,331 @@ public class Methodes {
             case 1: Methodes.preparationPartie();break;
             case 2:Methodes.regles();
         }
+    }
+
+    public static void preparationPartie(){
+        System.out.println();
+        System.out.println("Joueur 1 entrez votre pseudo :");
+        GestionBatailleNaval.pseudoJoueur1 = scanner.next();
+        System.out.println();
+        System.out.println("Joueur 2 entrez votre pseudo :");
+        GestionBatailleNaval.pseudoJoueur2 = scanner.next();
+        System.out.println();
+        afficherPlateau(GestionBatailleNaval.plateaujoueur1);
+        placementNavireJoueur(GestionBatailleNaval.pseudoJoueur1, GestionBatailleNaval.plateaujoueur1);
+        espaceEntrePlacementJoueur();
+        System.out.println("AU TOUR De " + GestionBatailleNaval.pseudoJoueur2 + " !!");
+        System.out.println();
+        afficherPlateau(GestionBatailleNaval.plateaujoueur2);
+        placementNavireJoueur(GestionBatailleNaval.pseudoJoueur2, GestionBatailleNaval.plateaujoueur2);
+        espaceEntrePlacementJoueur();
+    }
+
+    public static void placementNavireJoueur(String joueur, char [][]plateau){
+        int[] tailleNavire = {5, 4, 3, 3, 2}; // Longueurs des bateaux
+        String typeNavire="un navire";
+        for (int i=0; i< tailleNavire.length;i++) {
+            boolean estplacer = false;
+            if (tailleNavire[i] == 5){
+                typeNavire="le Porte-avion";
+            }
+            else if (tailleNavire[i] == 4){
+                typeNavire="le Croiseur";
+            }
+            else if (tailleNavire[i] == 3){
+                typeNavire="un des Contre-torpilleur";
+            }
+            else if (tailleNavire[i] == 2){
+                typeNavire="le torpilleur";
+            }
+            while (!estplacer) {
+                String position;
+                do {
+                    System.out.println(joueur + ", placez " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
+                    position = scanner.next().toUpperCase();
+                } while (position.length() != 2);
+
+                char direction;
+                do {
+                    System.out.println("sens ? (h/v)");
+                    direction = scanner.next().toLowerCase().charAt(0);
+                }while (direction != 'v' && direction != 'h');
+
+                int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+                int c = position.charAt(0) - 'A';
+
+                estplacer = placementNavire(plateau, tailleNavire[i], c, li, direction);
+                if (!estplacer) {
+                    System.out.println("Réessayez.");
+                }
+            }
+            afficherPlateau(plateau);
+        }
+    }
+
+    public static boolean placementNavire(char[][] plateau, int taille, int c, int li, char direction){
+
+        if ( ((plateau.length < li + taille) && (direction=='v')) || ((plateau[0].length < c + taille) && (direction == 'h'))  ){
+            System.out.println("Placement invalide!");
+            return false;
+        }
+        else {
+            // Vérification des collisions
+            for (int i = 0; i < taille; i++) {
+                if ((direction == 'h' && plateau[li][c + i] != '~') ||
+                        (direction == 'v' && plateau[li + i][c] != '~')) {
+                    System.out.println("Collision détectée! Une case est déjà occupée.");
+                    return false;
+                }
+            }
+
+            //placement porte avion
+            if (taille==5){
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'P';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'P';
+                    }
+
+                }
+            }
+            else if (taille==4) {
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'C';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'C';
+                    }
+
+                }
+            }
+            else if (taille==3) {
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'c';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'c';
+                    }
+
+                }
+            }
+            else {
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'T';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'T';
+                    }
+
+                }
+            }
+
+        }
+        return true;
+    }
+
+    public static void gestionTour(char[][] plateauJoueur1,char[][] plateauJoueur2,char[][] plateauJoueur1cachee,char[][] plateauJoueur2cachee){
+        int i = 1;
+
+        while(!tousCoulés(plateauJoueur1) && !tousCoulés(plateauJoueur2)){
+            System.out.println("Tour " + i + ": ");
+            if (i % 2 != 0){
+                System.out.println();
+                System.out.println(GestionBatailleNaval.pseudoJoueur1 + " à votre tour");
+                afficherPlateau(plateauJoueur2cachee);
+                gestionTir(plateauJoueur2, plateauJoueur2cachee);
+                afficherPlateau(plateauJoueur2cachee);
+                afichageCoules(plateauJoueur2);
+            }
+            else {
+                System.out.println(GestionBatailleNaval.pseudoJoueur2 + " à votre tour");
+                afficherPlateau(plateauJoueur1cachee);
+                gestionTir(plateauJoueur1,plateauJoueur1cachee);
+                afficherPlateau(plateauJoueur1cachee);
+                afichageCoules(plateauJoueur1);
+            }
+
+            i++;
+        }
+    }
+
+    public static void gestionTir(char[][] plateau, char[][] plateauCachee){
+        System.out.println("Entrez tir (format : A1): ");
+        String position = scanner.next().toUpperCase();
+
+        int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+        int c = position.charAt(0) - 'A';
+
+        if (plateau[li][c] == 'P' || plateau[li][c] == 'C' || plateau[li][c] == 'c' || plateau[li][c] == 'T'){
+            plateauCachee[li][c] = 'X';
+            plateau[li][c] = 'X';
+        }
+        else {
+            plateauCachee[li][c] = 'O';
+            plateau[li][c] = 'O';
+        }
+
+    }
+
+    public static void afichageCoules(char [][]plateau){
+        affichageCoulesPorteAvion(plateau);
+        affichageCoulesCroiseur(plateau);
+        affichageCoulesContreTorpilleur(plateau);
+        affichageCoulesTorpilleur(plateau);
+    }
+
+    public static void affichageCoulesPorteAvion (char[][] plateau){
+        boolean coules = true;
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'P') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+        if (coules) {
+            System.out.println("Le Porte avion a été coulé.");
+        }
+    }
+
+    public static void affichageCoulesCroiseur(char[][] plateau){
+        boolean coules = true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'C') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+
+        if (coules) {
+            System.out.println("Le Croiseur a été coulé.");
+        }
+    }
+
+    public static void affichageCoulesContreTorpilleur(char[][] plateau) {
+        boolean coules = true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'c') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+
+        if (coules) {
+            System.out.println("Le Contre-Torpilleur a été coulé.");
+        }
+    }
+
+    public static void affichageCoulesTorpilleur (char[][] plateau){
+        boolean coules = true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'T') {
+                    coules = false;
+                    break;
+                }
+            }
+            if (!coules) {
+                break;
+            }
+        }
+
+        if (coules) {
+            System.out.println("Le Torpilleur a été coulé.");
+        }
+    }
+
+    public static boolean tousCoulés(char[][] plateau){
+        boolean tousValide=false;
+        boolean porteAvionCoules=true;
+        boolean croiseurCoules=true;
+        boolean contreTorpilleurCoules=true;
+        boolean torpilleurCoules=true;
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'P') {
+                    porteAvionCoules = false;
+                    break;
+                }
+            }
+            if (!porteAvionCoules) {
+                break;
+            }
+        }
+
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'C') {
+                    croiseurCoules = false;
+                    break;
+                }
+            }
+            if (!croiseurCoules) {
+                break;
+            }
+        }
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'C') {
+                    contreTorpilleurCoules = false;
+                    break;
+                }
+            }
+            if (!contreTorpilleurCoules) {
+                break;
+            }
+        }
+
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'C') {
+                    torpilleurCoules = false;
+                    break;
+                }
+            }
+            if (!torpilleurCoules) {
+                break;
+            }
+        }
+
+        if (porteAvionCoules && croiseurCoules && contreTorpilleurCoules && torpilleurCoules){
+            tousValide=true;
+        }
+
+        return tousValide;
     }
 
     public static void regles(){
@@ -139,332 +478,12 @@ public class Methodes {
             case 1:preparationPartie();break;
         }
     }
-    public static void preparationPartie(){
-        System.out.println();
-        afficherPlateau(GestionBatailleNaval.plateaujoueur1);
-        placementNavireJoueur("Joueur 1", GestionBatailleNaval.plateaujoueur1);
-        espaceEntrePlacementJoueur();
-        System.out.println("AU TOUR DU JOUEUR 2 !!");
-        System.out.println();
-        afficherPlateau(GestionBatailleNaval.plateaujoueur2);
-        placementNavireJoueur("Joueur 2", GestionBatailleNaval.plateaujoueur2);
-    }
-    public static void placementNavireJoueur(String joueur, char [][]plateau){
-        int[] tailleNavire = {5, 4, 3, 3, 2}; // Longueurs des bateaux
-        String typeNavire="un navire";
-        for (int i=0; i< tailleNavire.length;i++) {
-            boolean estplacer = false;
-            if (tailleNavire[i] == 5){
-                typeNavire="le Porte-avion";
-            }
-            else if (tailleNavire[i] == 4){
-                typeNavire="le Croiseur";
-            }
-            else if (tailleNavire[i] == 3){
-                typeNavire="un des Contre-torpilleur";
-            }
-            else if (tailleNavire[i] == 2){
-                typeNavire="le torpilleur";
-            }
-            while (!estplacer) {
-                String position;
-                do {
-                    System.out.println(joueur + ", placez " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
-                    position = scanner.next().toUpperCase();
-                } while (position.length() != 2);
-
-                char direction;
-                do {
-                    System.out.println("sens ? (h/v)");
-                    direction = scanner.next().toLowerCase().charAt(0);
-                }while (direction != 'v' && direction != 'h');
-
-                int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
-                int c = position.charAt(0) - 'A';
-
-                estplacer = placementNavire(plateau, tailleNavire[i], c, li, direction);
-                if (!estplacer) {
-                    System.out.println("Réessayez.");
-                }
-            }
-            afficherPlateau(plateau);
-        }
-    }
-    public static boolean placementNavire(char[][] plateau, int taille, int c, int li, char direction){
-
-        if ( ((plateau.length < li + taille) && (direction=='v')) || ((plateau[0].length < c + taille) && (direction == 'h'))  ){
-            System.out.println("Placement invalide!");
-            return false;
-        }
-        else {
-//              A corriger
-//            for (int i = 0; i < taille; i++) {
-//                if (direction == 'h' && plateau[li][c + i] == 'C' || direction == 'h' && plateau[li][c + i] == 'c' || direction == 'h' && plateau[li][c + i] == 'T') {
-//                    System.out.println("Collision détectée!");
-//                    return false;
-//                }
-//                if (direction == 'v' && plateau[li][c + i] == 'C' || direction == 'v' && plateau[li][c + i] == 'v' || direction == 'v' && plateau[li][c + i] == 'T') {
-//                    System.out.println("Collision détectée!");
-//                    return false;
-//                }
-//            }
-
-            //placement porte avion
-            if (taille==5){
-                if (direction == 'h') {
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li][c + i] = 'P';
-                    }
-                }
-                else{
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li+i][c] = 'P';
-                    }
-
-                }
-            }
-            else if (taille==4) {
-                if (direction == 'h') {
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li][c + i] = 'C';
-                    }
-                }
-                else{
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li+i][c] = 'C';
-                    }
-
-                }
-            }
-            else if (taille==3) {
-                if (direction == 'h') {
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li][c + i] = 'c';
-                    }
-                }
-                else{
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li+i][c] = 'c';
-                    }
-
-                }
-            }
-            else {
-                if (direction == 'h') {
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li][c + i] = 'T';
-                    }
-                }
-                else{
-                    for (int i = 0; i < taille; i++) {
-                        plateau[li+i][c] = 'T';
-                    }
-
-                }
-            }
-
-        }
-        return true;
-    }
-
-    public static boolean tousCoulés(char[][] plateau){
-        boolean tousValide=false;
-        boolean porteAvionCoules=true;
-        boolean croiseurCoules=true;
-        boolean contreTorpilleurCoules=true;
-        boolean torpilleurCoules=true;
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='P'){
-                    porteAvionCoules=false;
-                }
-            }
-        }
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='C'){
-                    croiseurCoules=false;
-                }
-            }
-        }
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='c'){
-                    contreTorpilleurCoules=false;
-                }
-            }
-        }
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='T'){
-                    torpilleurCoules=false;
-                }
-            }
-        }
-
-        if (porteAvionCoules && croiseurCoules && contreTorpilleurCoules && torpilleurCoules){
-            tousValide=true;
-        }
-
-        return tousValide;
-    }
-
-    public static boolean unContreTorpilleurCoulés(char[][]plateau){
-        int compteur = 0;
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j]=='c'){
-                    compteur++;
-                }
-            }
-        }
-        if (compteur>=3){
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
 
     public static void espaceEntrePlacementJoueur(){
         for (int i = 0; i < 200; i++) {
             System.out.println();
         }
     }
-
-    public static void gestionTir(char[][] plateau, char[][] plateauCachee){
-        System.out.println("Entrez tir (format : A1): ");
-        String position = scanner.next().toUpperCase();
-
-        int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
-        int c = position.charAt(0) - 'A';
-
-        if (plateau[li][c] == 'P' || plateau[li][c] == 'C' || plateau[li][c] == 'c' || plateau[li][c] == 'T'){
-            plateauCachee[li][c] = 'X';
-            plateau[li][c] = 'X';
-        }
-        else {
-            plateauCachee[li][c] = 'O';
-            plateau[li][c] = 'O';
-        }
-
-    }
-
-    public static void gestionTour(char[][] plateauJoueur1,char[][] plateauJoueur2,char[][] plateauJoueur1cachee,char[][] plateauJoueur2cachee){
-        int i = 1;
-
-        while(!tousCoulés(plateauJoueur1) && !tousCoulés(plateauJoueur2)){
-            System.out.println("Tour " + i + ": ");
-            if (i % 2 != 0){
-                System.out.println("Joueur 1 --");
-                afficherPlateau(plateauJoueur2cachee);
-                gestionTir(plateauJoueur2, plateauJoueur2cachee);
-                afficherPlateau(plateauJoueur2cachee);
-                afichageCoules(plateauJoueur2);
-            }
-            else {
-                System.out.println("Joueur 2 --");
-                afficherPlateau(plateauJoueur1cachee);
-                gestionTir(plateauJoueur1,plateauJoueur1cachee);
-                afficherPlateau(plateauJoueur1cachee);
-                afichageCoules(plateauJoueur1);
-            }
-
-            i++;
-        }
-    }
-
-    public static void afichageCoules(char [][]plateau){
-        affichageCoulesPorteAvion(plateau);
-        affichageCoulesCroiseur(plateau);
-        affichageCoulesContreTorpilleur(plateau);
-        affichageCoulesTorpilleur(plateau);
-    }
-
-    public static void affichageCoulesPorteAvion (char[][] plateau){
-        boolean coules = true;
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j] == 'P') {
-                    coules = false;
-                    break;
-                }
-            }
-            if (!coules) {
-                break;
-            }
-        }
-        if (coules) {
-            System.out.println("Le Porte avion a été coulé.");
-        }
-    }
-
-    public static void affichageCoulesCroiseur(char[][] plateau){
-        boolean coules = true;
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j] == 'C') {
-                    coules = false;
-                    break;
-                }
-            }
-            if (!coules) {
-                break;
-            }
-        }
-
-        if (coules) {
-            System.out.println("Le Croiseur a été coulé.");
-        }
-    }
-
-    public static void affichageCoulesContreTorpilleur(char[][] plateau) {
-        boolean coules = true;
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j] == 'c') {
-                    coules = false;
-                    break;
-                }
-            }
-            if (!coules) {
-                break;
-            }
-        }
-
-        if (coules) {
-            System.out.println("Le Contre-Torpilleur a été coulé.");
-        }
-    }
-
-
-    public static void affichageCoulesTorpilleur (char[][] plateau){
-        boolean coules = true;
-
-        for (int i = 0; i < plateau.length; i++) {
-            for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j] == 'T') {
-                    coules = false;
-                    break;
-                }
-            }
-            if (!coules) {
-                break;
-            }
-        }
-
-        if (coules) {
-            System.out.println("Le Torpilleur a été coulé.");
-        }
-    }
-
 //    public static void placementAutomatiqueNavire(char[][] plateauJoueur1,char[][] plateauJoueur2){
 //        for (int i = 5; i > 0; i--) {
 //            int li = (int)(Math.random()*(10-1+1)+1);
