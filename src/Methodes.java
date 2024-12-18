@@ -173,10 +173,10 @@ public class Methodes {
                 System.out.println("sens ? (h/v)");
                 char direction = scanner.next().toLowerCase().charAt(0);
 
-                int y = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
-                int x = position.charAt(0) - 'A';
+                int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+                int c = position.charAt(0) - 'A';
 
-                estplacer = placementNavire(plateau, tailleNavire[i], x, y, direction);
+                estplacer = placementNavire(plateau, tailleNavire[i], c, li, direction);
                 if (!estplacer) {
                     System.out.println("Réessayez.");
                 }
@@ -185,39 +185,78 @@ public class Methodes {
         }
     }
 
-    public static boolean placementNavire(char[][] plateau, int taille, int x, int y, char direction){
+    public static boolean placementNavire(char[][] plateau, int taille, int c, int li, char direction){
 
-        if ( ((plateau.length < y + taille) && (direction=='v')) || ((plateau[0].length < x + taille) && (direction == 'h'))  ){
+        if ( ((plateau.length < li + taille) && (direction=='v')) || ((plateau[0].length < c + taille) && (direction == 'h'))  ){
             System.out.println("Placement invalide!");
             return false;
         }
         else {
             for (int i = 0; i < taille; i++) {
-                if (direction == 'h' && plateau[y][x + i] == 'B') {
+                if (direction == 'h' && plateau[li][c + i] == 'B') {
                     System.out.println("Collision détectée!");
                     return false;
                 }
-                if (direction == 'v' && plateau[y + i][x] == 'B') {
+                if (direction == 'v' && plateau[li + i][c] == 'B') {
                     System.out.println("Collision détectée!");
                     return false;
                 }
             }
-            for (int ligne = 0; ligne < plateau.length; ligne++) {
-                for (int col = 0; col < plateau[ligne].length; col++) {
-                    if (ligne == y && col == x) {
-                        if (direction == 'h') {
-                            for (int i = 0; i < taille; i++) {
-                                plateau[ligne][col + i] = 'B';
-                            }
-                        }
-                        else{
-                            for (int i = 0; i < taille; i++) {
-                                plateau[ligne+i][col] = 'B';
-                            }
-                        }
+
+            //placement porte avion
+            if (taille==5){
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'P';
                     }
                 }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'P';
+                    }
+
+                }
             }
+            else if (taille==4) {
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'C';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'C';
+                    }
+
+                }
+            }
+            else if (taille==3) {
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'c';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'c';
+                    }
+
+                }
+            }
+            else {
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'T';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'T';
+                    }
+
+                }
+            }
+
         }
         return true;
     }
@@ -232,6 +271,7 @@ public class Methodes {
         }
         return true;
     }
+    
 
     public static void espaceEntrePlacementJoueur(){
         for (int i = 0; i < 200; i++) {
