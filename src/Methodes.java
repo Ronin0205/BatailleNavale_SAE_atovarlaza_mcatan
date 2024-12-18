@@ -334,17 +334,39 @@ public class Methodes {
             System.out.println();
         }
     }
-    
-    
 
-    public static void espaceEntrePlacementJoueur(){
-        for (int i = 0; i < 200; i++) {
-            System.out.println();
+    public static void gestionTir(char[][] plateau, char[][] plateauCachee){
+        afficherPlateau(plateauCachee);
+        System.out.println("Entrez tir (format : A1): ");
+        String position = scanner.next().toUpperCase();
+
+        int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+        int c = position.charAt(0) - 'A';
+
+        if (plateau[li][c] == 'P' || plateau[li][c] == 'C' || plateau[li][c] == 'c' || plateau[li][c] == 'T'){
+            plateauCachee[li][c] = 'X';
         }
+        else {
+            plateauCachee[li][c] = 'O';
+        }
+
+        afficherPlateau(plateauCachee);
     }
 
-    public static void gestionTour(){
+    public static void gestionTour(char[][] plateauJoueur1,char[][] plateauJoueur2,char[][] plateauJoueur1cachee,char[][] plateauJoueur2cachee){
+        int i = 1;
 
+        while(!tousCoulés(plateauJoueur1cachee) && !tousCoulés(plateauJoueur2cachee)){
+            System.out.println("Tour " + i + ": ");
+            if (i % 2 != 0){
+                gestionTir(plateauJoueur2, plateauJoueur2cachee);
+            }
+            else {
+                gestionTir(plateauJoueur1,plateauJoueur2cachee);
+            }
+
+            i++;
+        }
     }
 
 }
