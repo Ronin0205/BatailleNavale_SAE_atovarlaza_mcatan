@@ -211,22 +211,36 @@ public class Methodes {
 
     public static void gestionTour(char[][] plateauJoueur1,char[][] plateauJoueur2,char[][] plateauJoueur1cachee,char[][] plateauJoueur2cachee){
         int i = 1;
-
+        boolean toucher;
         while(!tousCoulés(plateauJoueur1) && !tousCoulés(plateauJoueur2)){
             System.out.println("Tour " + i + ": ");
             if (i % 2 != 0){
                 System.out.println();
                 System.out.println(GestionBatailleNaval.pseudoJoueur1 + " à votre tour");
                 afficherPlateau(plateauJoueur2cachee);
-                gestionTir(plateauJoueur2, plateauJoueur2cachee);
+                toucher = gestionTir(plateauJoueur2, plateauJoueur2cachee);
                 afficherPlateau(plateauJoueur2cachee);
+                if (toucher){
+                    System.out.println(GestionBatailleNaval.pseudoJoueur1 + " vous avez Toucher un navire !! ");
+                }
+                else {
+                    System.out.println("A l'eau !! ");
+                }
                 afichageCoules(plateauJoueur2);
             }
             else {
                 System.out.println(GestionBatailleNaval.pseudoJoueur2 + " à votre tour");
                 afficherPlateau(plateauJoueur1cachee);
-                gestionTir(plateauJoueur1,plateauJoueur1cachee);
+                toucher = gestionTir(plateauJoueur1,plateauJoueur1cachee);
                 afficherPlateau(plateauJoueur1cachee);
+                if (toucher){
+                    System.out.println(GestionBatailleNaval.pseudoJoueur2 + " vous avez Toucher un navire !! ");
+                    System.out.println();
+                }
+                else {
+                    System.out.println("A l'eau !! ");
+                    System.out.println();
+                }
                 afichageCoules(plateauJoueur1);
             }
 
@@ -234,7 +248,7 @@ public class Methodes {
         }
     }
 
-    public static void gestionTir(char[][] plateau, char[][] plateauCachee){
+    public static boolean gestionTir(char[][] plateau, char[][] plateauCachee){
         System.out.println("Entrez tir (format : A1): ");
         String position = scanner.next().toUpperCase();
 
@@ -244,11 +258,20 @@ public class Methodes {
         if (plateau[li][c] == 'P' || plateau[li][c] == 'C' || plateau[li][c] == 'c' || plateau[li][c] == 'T'){
             plateauCachee[li][c] = 'X';
             plateau[li][c] = 'X';
+            return true;
         }
         else {
             plateauCachee[li][c] = 'O';
             plateau[li][c] = 'O';
+            return false;
         }
+
+    }
+
+    public static void affichageTouche(){
+
+    }
+    public static void affichageALeau(){
 
     }
 
