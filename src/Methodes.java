@@ -86,7 +86,7 @@ public class Methodes {
         afficherPlateau(GestionBatailleNaval.plateaujoueur1);
         placementNavireJoueur(GestionBatailleNaval.pseudoJoueur1, GestionBatailleNaval.plateaujoueur1);
         espaceEntrePlacementJoueur();
-        System.out.println("AU TOUR De " + GestionBatailleNaval.pseudoJoueur2 + " !!");
+        System.out.println("AU TOUR DE TOI " + GestionBatailleNaval.pseudoJoueur2 + " !!");
         System.out.println();
         afficherPlateau(GestionBatailleNaval.plateaujoueur2);
         placementNavireJoueur(GestionBatailleNaval.pseudoJoueur2, GestionBatailleNaval.plateaujoueur2);
@@ -113,7 +113,7 @@ public class Methodes {
             while (!estplacer) {
                 String position;
                 do {
-                    System.out.println(joueur + ", placez " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
+                    System.out.println(joueur + ", place " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
                     position = scanner.next().toUpperCase();
                 } while (position.length() != 2);
 
@@ -216,12 +216,12 @@ public class Methodes {
             System.out.println("Tour " + i + ": ");
             if (i % 2 != 0){
                 System.out.println();
-                System.out.println(GestionBatailleNaval.pseudoJoueur1 + " à votre tour");
+                System.out.println(GestionBatailleNaval.pseudoJoueur1.toUpperCase() + " à votre tour !!\n");
                 afficherPlateau(plateauJoueur2cachee);
                 toucher = gestionTir(plateauJoueur2, plateauJoueur2cachee);
                 afficherPlateau(plateauJoueur2cachee);
                 if (toucher){
-                    System.out.println(GestionBatailleNaval.pseudoJoueur1 + " vous avez Toucher un navire !! ");
+                    System.out.println(GestionBatailleNaval.pseudoJoueur1.toUpperCase() + " vous avez Toucher un navire !! \n");
                 }
                 else {
                     System.out.println("A l'eau !! ");
@@ -229,17 +229,15 @@ public class Methodes {
                 afichageCoules(plateauJoueur2);
             }
             else {
-                System.out.println(GestionBatailleNaval.pseudoJoueur2 + " à votre tour");
+                System.out.println(GestionBatailleNaval.pseudoJoueur2 + " à votre tour !!\n");
                 afficherPlateau(plateauJoueur1cachee);
                 toucher = gestionTir(plateauJoueur1,plateauJoueur1cachee);
                 afficherPlateau(plateauJoueur1cachee);
                 if (toucher){
-                    System.out.println(GestionBatailleNaval.pseudoJoueur2 + " vous avez Toucher un navire !! ");
-                    System.out.println();
+                    System.out.println(GestionBatailleNaval.pseudoJoueur2 + " vous avez Toucher un navire !! \n");
                 }
                 else {
-                    System.out.println("A l'eau !! ");
-                    System.out.println();
+                    System.out.println("A l'eau !! \n");
                 }
                 afichageCoules(plateauJoueur1);
             }
@@ -265,13 +263,6 @@ public class Methodes {
             plateau[li][c] = 'O';
             return false;
         }
-
-    }
-
-    public static void affichageTouche(){
-
-    }
-    public static void affichageALeau(){
 
     }
 
