@@ -4,6 +4,8 @@ public class GestionBatailleNaval {
     public static char[][] plateaujoueur2 = new char[10][10];
     public static char[][] plateaujoueur1cachee =new char[10][10];
     public static char[][] plateaujouer2cachee =new char[10][10];
+    public static String pseudoJoueur1 = "";
+    public static String pseudoJoueur2 = "";
 
     public static void gestionBataille(){
 
