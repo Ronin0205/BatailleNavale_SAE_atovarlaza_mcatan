@@ -247,11 +247,20 @@ public class Methodes {
     }
 
     public static boolean gestionTir(char[][] plateau, char[][] plateauCachee){
+
         System.out.println("Entrez tir (format : A1): ");
         String position = scanner.next().toUpperCase();
 
         int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
         int c = position.charAt(0) - 'A';
+
+        while (plateau[li][c] == 'X'){
+            System.out.println("Tir invalide vous avez déja tirer ici !!  ");
+            System.out.println("Entrez tir (format : A1): ");
+            position = scanner.next().toUpperCase();
+            li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+            c = position.charAt(0) - 'A';
+        }
 
         if (plateau[li][c] == 'P' || plateau[li][c] == 'C' || plateau[li][c] == 'c' || plateau[li][c] == 'T'){
             plateauCachee[li][c] = 'X';
