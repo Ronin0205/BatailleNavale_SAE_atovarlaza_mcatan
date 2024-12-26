@@ -1,15 +1,29 @@
-import java.util.*;
+import java.util.Scanner;
 public class Methodes {
     public static Scanner scanner = new Scanner(System.in);
 
-    public static void generationPlateau(char[][] plateau){
-        for (int ligne = 0; ligne < plateau.length; ligne++) {
-            for (int col = 0; col < plateau[ligne].length; col++) {
-                plateau[ligne][col] = '~';
+/**  Initialise les plateaux des joueurs et les plateaux de tir en remplissant
+    toutes les cases avec le caractère '~' (cellule vide)
+ */
+    public static void generationDesPlateau(char[][] plateaujoueur1, char[][] plateaujoueur2, char[][] plateauTirJoueur1, char[][] plateauTirJoueur2) {
+        for (int ligne = 0; ligne < plateaujoueur1.length; ligne++) {
+            for (int col = 0; col < plateaujoueur1[ligne].length; col++) {
+                plateaujoueur1[ligne][col] = '~';
+                plateaujoueur2[ligne][col] = '~';
+                plateauTirJoueur1[ligne][col] = '~';
+                plateauTirJoueur2[ligne][col] = '~';
             }
         }
     }
 
+    /**
+     * Affiche un plateau de jeu avec des couleurs correspondant aux différents types de cases.
+     * Les colonnes sont étiquetées de 'A' à 'J' et les lignes sont numérotées.
+     * - '~' : Bleu, représente une case vide.
+     * - 'P', 'C', 'c', 'S', 'T' : Jaune, représente différents types de navires.
+     * - 'X' : Rouge, représente une case touchée.
+     * - 'O' : Vert, représente une case manquée.
+     */
     public static void afficherPlateau(char[][] plateau){
         int compteur =1;
         System.out.println("    "+"A  "+"B  "+"C  "+"D  "+"E  "+"F  "+"G  "+"H  "+"I  "+"J");
@@ -17,28 +31,16 @@ public class Methodes {
             System.out.printf("%2d  ",compteur);
             compteur++;
             for (int j = 0; j < plateau[i].length; j++) {
-                if (plateau[i][j] == '~') {
-                    System.out.print("\u001B[34m~" + "  ");
-                }
-                else if (plateau[i][j] == 'P') {
-                    System.out.print("\u001B[33mP" + "  "); // a modifier
-                }
-                else if (plateau[i][j] == 'C') {
-                    System.out.print("\u001B[33mC" + "  "); // a modifier
-                }
-                else if (plateau[i][j] == 'c') {
-                    System.out.print("\u001B[33mc" + "  "); // a modifier
-                }
-                else if (plateau[i][j] == 'T') {
-                    System.out.print("\u001B[33mT" + "  "); // a modifier
-                }
-                else if (plateau[i][j] == 'X') {
-                    System.out.print("\u001B[31mX" + "  ");                }
-                else if (plateau[i][j] == 'O') {
-                    System.out.print("\u001B[32m0" + "  ");
-                }
-                else {
-                    System.out.print(plateau[i][j] + "  ");
+                switch (plateau[i][j]) {
+                    case '~':System.out.print("\u001B[34m~" + "  ");break;
+                    case 'P':System.out.print("\u001B[33mP" + "  ");break;
+                    case 'C':System.out.print("\u001B[33mC" + "  ");break;
+                    case 'c':System.out.print("\u001B[33mc" + "  ");break;
+                    case 'S':System.out.print("\u001B[33mS" + "  ");break;
+                    case 'T':System.out.print("\u001B[33mT" + "  ");break;
+                    case 'X':System.out.print("\u001B[31mX" + "  ");break;
+                    case 'O':System.out.print("\u001B[32m0" + "  ");break;
+                    default:System.out.print(plateau[i][j] + "  ");
                 }
             }
             System.out.print("\u001B[0m");
@@ -47,95 +49,115 @@ public class Methodes {
         System.out.println();
     }
 
-    public static void menu(){
-        String marron = "\u001B[33m"; // Couleur marron
-        String reset = "\u001B[0m";
-
-        String texte = """
-              ______       _        _ _ _        _   _                  _      
-             | ___ \\     | |      (_) | |      | \\ | |                | |     
-             | |_/ / __ _| |_ __ _ _| | | ___  |  \\| | __ ___   ____ _| | ___ 
-             | ___ \\/ _` | __/ _` | | | |/ _ \\ | . ` |/ _` \\ \\ / / _` | |/ _ \\
-             | |_/ / (_| | || (_| | | | |  __/ | |\\  | (_| |\\ V / (_| | |  __/
-             \\____/ \\__,_|\\__\\__,_|_|_|_|\\___| \\_| \\_/\\__,_| \\_/ \\__,_|_|\\___|  
-        """;
-
-        System.out.println(marron + texte + reset);
-        System.out.println();
-        System.out.println("1. Démarer une partie\n" +
-                "2. Redécouvrir les règles\n" +
-                "3. Quitter\n");
-
-        System.out.print("==>  ");
-        int choix=0;
-        choix = scanner.nextInt();
-        switch (choix){
-            case 1: Methodes.preparationPartie();break;
-            case 2:Methodes.regles();
-        }
-    }
-
+/**
+ * Prépare la partie en demandant les pseudos des deux joueurs,
+ * en vérifiant qu'ils sont différents, et en procédant à la phase
+ * de placement des navires pour chaque joueur.*/
     public static void preparationPartie(){
-        System.out.println();
-        System.out.println("Joueur 1 entrez votre pseudo :");
+
+        System.out.println("\nJoueur 1 entrez votre pseudo :");
         GestionBatailleNaval.pseudoJoueur1 = scanner.next();
-        System.out.println();
-        System.out.println("Joueur 2 entrez votre pseudo :");
-        GestionBatailleNaval.pseudoJoueur2 = scanner.next();
-        System.out.println();
+
+        do {
+            System.out.println("\nJoueur 2 entrez votre pseudo :");
+            GestionBatailleNaval.pseudoJoueur2 = scanner.next();
+        }while (GestionBatailleNaval.pseudoJoueur1.equals(GestionBatailleNaval.pseudoJoueur2));
+
+
+        sautDelignes();
+
         afficherPlateau(GestionBatailleNaval.plateaujoueur1);
         placementNavireJoueur(GestionBatailleNaval.pseudoJoueur1, GestionBatailleNaval.plateaujoueur1);
-        espaceEntrePlacementJoueur();
-        System.out.println("AU TOUR DE TOI " + GestionBatailleNaval.pseudoJoueur2 + " !!");
-        System.out.println();
+
+        sautDelignes();
+
+        System.out.println("À TOI " + GestionBatailleNaval.pseudoJoueur2.toUpperCase() + " !!\n");
+
         afficherPlateau(GestionBatailleNaval.plateaujoueur2);
         placementNavireJoueur(GestionBatailleNaval.pseudoJoueur2, GestionBatailleNaval.plateaujoueur2);
-        espaceEntrePlacementJoueur();
+
+        sautDelignes();
     }
 
+/**
+ * Permet à un joueur de placer ses navires sur son plateau.
+ * - Demande la position (format "A1") et la direction (h/v).
+ * - Vérifie et place chaque navire en s'assurant qu'il ne dépasse pas les limites ou ne chevauche pas d'autres navires.
+ * - Répète jusqu'à un placement valide et affiche le plateau après chaque placement.
+ */
     public static void placementNavireJoueur(String joueur, char [][]plateau){
         int[] tailleNavire = {5, 4, 3, 3, 2}; // Longueurs des bateaux
-        String typeNavire="un navire";
+        int compteur=0;
+        String typeNavire;
         for (int i=0; i< tailleNavire.length;i++) {
+            String position;
+            char direction;
+            int li;
+            int c;
             boolean estplacer = false;
-            if (tailleNavire[i] == 5){
-                typeNavire="le Porte-avion";
+
+            switch (tailleNavire[i]){
+                case 5:typeNavire="le Porte-avion";break;
+                case 4:typeNavire="le Croiseur";break;
+                case 3:if (compteur==2){
+                    typeNavire="le Contre-torpilleur";break;
+                }
+                else {
+                    typeNavire="le Sous-marin";break;
+                }
+                case 2:typeNavire="le torpilleur";break;
+                default:typeNavire="le navire";
             }
-            else if (tailleNavire[i] == 4){
-                typeNavire="le Croiseur";
-            }
-            else if (tailleNavire[i] == 3){
-                typeNavire="un des Contre-torpilleur";
-            }
-            else if (tailleNavire[i] == 2){
-                typeNavire="le torpilleur";
-            }
+
             while (!estplacer) {
-                String position;
+
                 do {
                     System.out.println(joueur + ", place " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
                     position = scanner.next().toUpperCase();
-                } while (position.length() != 2);
+                } while (position.length() > 3);
 
-                char direction;
                 do {
                     System.out.println("sens ? (h/v)");
                     direction = scanner.next().toLowerCase().charAt(0);
                 }while (direction != 'v' && direction != 'h');
 
-                int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
-                int c = position.charAt(0) - 'A';
+                 li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+                 c = position.charAt(0) - 'A';
 
-                estplacer = placementNavire(plateau, tailleNavire[i], c, li, direction);
+                estplacer = placementNavire(plateau, tailleNavire[i],compteur, c, li, direction);
                 if (!estplacer) {
-                    System.out.println("Réessayez.");
+                    System.out.println("Réessayez.\n");
+                    do{
+                        do {
+                            System.out.println(joueur + ", place " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
+                            position = scanner.next().toUpperCase();
+                        } while (position.length() > 3);
+
+                        do {
+                            System.out.println("sens ? (h/v)");
+                            direction = scanner.next().toLowerCase().charAt(0);
+                        }while (direction != 'v' && direction != 'h');
+
+                         li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+                         c = position.charAt(0) - 'A';
+
+                        estplacer = placementNavire(plateau, tailleNavire[i],compteur, c, li, direction);
+                    }while (!estplacer);
                 }
+                compteur++;
             }
             afficherPlateau(plateau);
         }
     }
 
-    public static boolean placementNavire(char[][] plateau, int taille, int c, int li, char direction){
+    /**
+     * Place un navire sur le plateau de jeu si les conditions sont respectées.
+     * - Vérifie que le navire ne dépasse pas les limites du plateau.
+     * - Vérifie qu'il n'y a pas de collision avec d'autres navires.
+     * - Place le navire en fonction de sa taille et de sa direction ('h' ou 'v').
+     * - retourne true si le placement est réussi, false sinon.
+     */
+    public static boolean placementNavire(char[][] plateau, int taille, int compteurs, int c, int li, char direction){
 
         if ( ((plateau.length < li + taille) && (direction=='v')) || ((plateau[0].length < c + taille) && (direction == 'h'))  ){
             System.out.println("Placement invalide!");
@@ -178,7 +200,7 @@ public class Methodes {
 
                 }
             }
-            else if (taille==3) {
+            else if (taille==3 && compteurs==2) {
                 if (direction == 'h') {
                     for (int i = 0; i < taille; i++) {
                         plateau[li][c + i] = 'c';
@@ -187,6 +209,19 @@ public class Methodes {
                 else{
                     for (int i = 0; i < taille; i++) {
                         plateau[li+i][c] = 'c';
+                    }
+
+                }
+            }
+            else if (taille==3 && compteurs==3) {
+                if (direction == 'h') {
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li][c + i] = 'S';
+                    }
+                }
+                else{
+                    for (int i = 0; i < taille; i++) {
+                        plateau[li+i][c] = 'S';
                     }
 
                 }
@@ -209,56 +244,79 @@ public class Methodes {
         return true;
     }
 
+    /**
+     * Gère le déroulement des tours dans la partie.
+     * - Alterne entre les deux joueurs jusqu'à ce que tous les navires d'un joueur soient coulés.
+     * - Chaque joueur visualise le plateau caché de l'adversaire et effectue un tir.
+     * - Affiche le résultat du tir (touché ou manqué) et les navires coulés.
+     * - Déclare le gagnant lorsque tous les navires d'un joueur sont coulés et termine la partie.
+     */
     public static void gestionTour(char[][] plateauJoueur1,char[][] plateauJoueur2,char[][] plateauJoueur1cachee,char[][] plateauJoueur2cachee){
         int i = 1;
         boolean toucher;
+        while(!tousCoules(plateauJoueur1) && !tousCoules(plateauJoueur2)){
+            if (i % 2 != 0){
+                System.out.println("\nTour de " + GestionBatailleNaval.pseudoJoueur1 + ": ");
+            }
+            else {
+                System.out.println("\nTour de " + GestionBatailleNaval.pseudoJoueur2 + ": ");
+            }
 
-
-        while(!tousCoulés(plateauJoueur1) && !tousCoulés(plateauJoueur2)){
-            System.out.println("Tour " + i + ": ");
             if (i % 2 != 0){
                 System.out.println();
-                System.out.println(GestionBatailleNaval.pseudoJoueur1.toUpperCase() + " à votre tour !!\n");
                 afficherPlateau(plateauJoueur2cachee);
                 toucher = gestionTir(plateauJoueur2, plateauJoueur2cachee);
                 afficherPlateau(plateauJoueur2cachee);
                 if (toucher){
-                    System.out.println(GestionBatailleNaval.pseudoJoueur1.toUpperCase() + " vous avez Toucher un navire !! \n");
+                    System.out.println(GestionBatailleNaval.pseudoJoueur1 + " a touché un navire !!");
                 }
                 else {
                     System.out.println("A l'eau !! ");
                 }
-                afichageCoules(plateauJoueur2);
+                affichageDesNaviresCoules(plateauJoueur2);
             }
             else {
-                System.out.println(GestionBatailleNaval.pseudoJoueur2 + " à votre tour !!\n");
+                System.out.println();
                 afficherPlateau(plateauJoueur1cachee);
                 toucher = gestionTir(plateauJoueur1,plateauJoueur1cachee);
                 afficherPlateau(plateauJoueur1cachee);
                 if (toucher){
-                    System.out.println(GestionBatailleNaval.pseudoJoueur2 + " vous avez Toucher un navire !! \n");
+                    System.out.println(GestionBatailleNaval.pseudoJoueur2 + " a touché un navire !!");
                 }
                 else {
                     System.out.println("A l'eau !! \n");
                 }
-                afichageCoules(plateauJoueur1);
+                affichageDesNaviresCoules(plateauJoueur1);
             }
 
+            if (tousCoules(plateauJoueur2)){
+                sautDelignes();
+                System.out.println("\nVictore de " + GestionBatailleNaval.pseudoJoueur1 + " en " + i + " tours\n");
+                GestionBatailleNaval.finDePartie();
+            }
+            else if (tousCoules(plateauJoueur1)) {
+                sautDelignes();
+                System.out.println("\nVictore de " + GestionBatailleNaval.pseudoJoueur2 + " en " + i + " tours\n");
+                GestionBatailleNaval.finDePartie();
+            }
             i++;
-        }
-        if (tousCoulés(plateauJoueur2)){
-            System.out.println("Victore " + GestionBatailleNaval.pseudoJoueur1 + " en " + i + " tours");
-        }
-        else if (tousCoulés(plateauJoueur1)) {
-            System.out.println("Victore " + GestionBatailleNaval.pseudoJoueur2 + " en " + i + " tours");
         }
     }
 
+    /**
+     * Gère un tir effectué par un joueur sur le plateau de l'adversaire.
+     * - Demande la position du tir (format "A1") et vérifie sa validité.
+     * - Marque la case comme touchée ('X') si un navire est présent, ou comme manquée ('O') sinon.
+     * - Empêche de tirer plusieurs fois sur la même case.
+     * - Retourne true si un navire a été touché, false si le tir a manqué.
+     */
     public static boolean gestionTir(char[][] plateau, char[][] plateauCachee){
+        String position;
+        do {
+            System.out.println("Entrez tir (format : A1): ");
+            position = scanner.next().toUpperCase();
+        }while (position.length() > 3);
 
-
-        System.out.println("Entrez tir (format : A1): ");
-        String position = scanner.next().toUpperCase();
 
         int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
         int c = position.charAt(0) - 'A';
@@ -271,7 +329,7 @@ public class Methodes {
             c = position.charAt(0) - 'A';
         }
 
-        if (plateau[li][c] == 'P' || plateau[li][c] == 'C' || plateau[li][c] == 'c' || plateau[li][c] == 'T'){
+        if (plateau[li][c] == 'P' || plateau[li][c] == 'C' || plateau[li][c] == 'c' || plateau[li][c] == 'S' || plateau[li][c] == 'T'){
             plateauCachee[li][c] = 'X';
             plateau[li][c] = 'X';
             return true;
@@ -284,263 +342,126 @@ public class Methodes {
 
     }
 
-    public static void afichageCoules(char [][]plateau){
-        affichageCoulesPorteAvion(plateau);
-        affichageCoulesCroiseur(plateau);
-        affichageCoulesContreTorpilleur(plateau);
-        affichageCoulesTorpilleur(plateau);
-    }
+    /**
+     * Vérifie et affiche les navires coulés sur un plateau donné.
+     * - Parcourt le plateau pour déterminer si chaque type de navire ('P', 'C', 'c', 'S', 'T') est entièrement détruit.
+     * - Affiche un message pour chaque navire coulé.
+     */
+    public static void affichageDesNaviresCoules(char [][]plateau){
+        boolean PAcoules = true;
+        boolean CroiseurCoules = true;
+        boolean CTorpilleurCoules = true;
+        boolean torpilleurCoules = true;
+        boolean sMarinCoules = true;
 
-    public static boolean affichageCoulesPorteAvion (char[][] plateau){
-        boolean coules = true;
         for (int i = 0; i < plateau.length; i++) {
             for (int j = 0; j < plateau[i].length; j++) {
                 if (plateau[i][j] == 'P') {
-                    coules = false;
+                    PAcoules = false;
                     break;
                 }
             }
-            if (!coules) {
+            if (!PAcoules) {
                 break;
             }
         }
-        if (coules) {
-            System.out.println("Le Porte avion a été coulé.");
-        }
-        return coules;
-    }
-
-    public static boolean affichageCoulesCroiseur(char[][] plateau){
-        boolean coules = true;
 
         for (int i = 0; i < plateau.length; i++) {
             for (int j = 0; j < plateau[i].length; j++) {
                 if (plateau[i][j] == 'C') {
-                    coules = false;
+                    CroiseurCoules = false;
                     break;
                 }
             }
-            if (!coules) {
+            if (!CroiseurCoules) {
                 break;
             }
         }
-
-        if (coules) {
-            System.out.println("Le Croiseur a été coulé.");
-        }
-        return coules;
-    }
-
-    public static boolean affichageCoulesContreTorpilleur(char[][] plateau) {
-        boolean coules = true;
 
         for (int i = 0; i < plateau.length; i++) {
             for (int j = 0; j < plateau[i].length; j++) {
                 if (plateau[i][j] == 'c') {
-                    coules = false;
+                    CTorpilleurCoules = false;
                     break;
                 }
             }
-            if (!coules) {
+            if (!CTorpilleurCoules) {
                 break;
             }
         }
 
-        if (coules) {
-            System.out.println("Le Contre-Torpilleur a été coulé.");
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'S') {
+                    sMarinCoules = false;
+                    break;
+                }
+            }
+            if (!sMarinCoules) {
+                break;
+            }
         }
-        return coules;
-    }
-
-    public static boolean affichageCoulesTorpilleur (char[][] plateau){
-        boolean coules = true;
 
         for (int i = 0; i < plateau.length; i++) {
             for (int j = 0; j < plateau[i].length; j++) {
                 if (plateau[i][j] == 'T') {
-                    coules = false;
+                    torpilleurCoules = false;
                     break;
                 }
             }
-            if (!coules) {
+            if (!torpilleurCoules) {
                 break;
             }
         }
 
-        if (coules) {
-            System.out.println("Le Torpilleur a été coulé.");
+        if (PAcoules) {
+            System.out.println("\nLe Porte avion a été coulé.");
         }
-        return coules;
-    }
 
-//    public static boolean tousCoulés(char[][] plateau){
-//        boolean tousValide=false;
-//        boolean porteAvionCoules=true;
-//        boolean croiseurCoules=true;
-//        boolean contreTorpilleurCoules=true;
-//        boolean torpilleurCoules=true;
-//
-//        for (int i = 0; i < plateau.length; i++) {
-//            for (int j = 0; j < plateau[i].length; j++) {
-//                if (plateau[i][j] == 'P') {
-//                    porteAvionCoules = false;
-//                    break;
-//                }
-//            }
-//            if (!porteAvionCoules) {
-//                break;
-//            }
-//        }
-//
-//
-//        for (int i = 0; i < plateau.length; i++) {
-//            for (int j = 0; j < plateau[i].length; j++) {
-//                if (plateau[i][j] == 'C') {
-//                    croiseurCoules = false;
-//                    break;
-//                }
-//            }
-//            if (!croiseurCoules) {
-//                break;
-//            }
-//        }
-//
-//        for (int i = 0; i < plateau.length; i++) {
-//            for (int j = 0; j < plateau[i].length; j++) {
-//                if (plateau[i][j] == 'C') {
-//                    contreTorpilleurCoules = false;
-//                    break;
-//                }
-//            }
-//            if (!contreTorpilleurCoules) {
-//                break;
-//            }
-//        }
-//
-//        for (int i = 0; i < plateau.length; i++) {
-//            for (int j = 0; j < plateau[i].length; j++) {
-//                if (plateau[i][j] == 'C') {
-//                    torpilleurCoules = false;
-//                    break;
-//                }
-//            }
-//            if (!torpilleurCoules) {
-//                break;
-//            }
-//        }
-//
-//        if (porteAvionCoules && croiseurCoules && contreTorpilleurCoules && torpilleurCoules){
-//            tousValide=true;
-//        }
-//
-//        return tousValide;
-//    }
-
-    public static boolean tousCoulés(char[][] plateau){
-        if (affichageCoulesPorteAvion(plateau) && affichageCoulesCroiseur(plateau) && affichageCoulesContreTorpilleur(plateau) && affichageCoulesTorpilleur(plateau)){
-            return true;
+        if (CroiseurCoules) {
+            System.out.println("\nLe Croiseur a été coulé.");
         }
-        return false;
-    }
 
-    public static void regles(){
-        System.out.println("Règles du Jeu : Bataille Navale\n \n" +
-                "Objectif du Jeu\n \n" +
-                "\tL'objectif est de couler tous les navires de l'adversaire en devinant leur position sur sa grille.\n\tLe premier joueur à couler tous les navires ennemis remporte la partie."
-        );
-        System.out.println();
-        System.out.println("Mise en Place");
-        System.out.println();
-        System.out.println("\t1. Plateaux de jeu :");
-        System.out.println();
-        System.out.println("\t \tChaque joueur a une grille (par exemple, 10x10) où placer ses navires.");
-        System.out.println("\t \tLes colonnes sont identifiées par des lettres (A à J) et les lignes par des chiffres (1 à 10).");
-        System.out.println();
-        System.out.println("\t2. Placement des navires :");
-        System.out.println();
-        System.out.println("\t \tChaque joueur dispose de plusieurs navires de tailles différentes :");
-        System.out.println();
-        System.out.println("\t \t \t- Porte-avions (5 cases)");
-        System.out.println("\t \t \t- Croiseur (4 cases)");
-        System.out.println("\t \t \t- Contre-torpilleur (3 cases)");
-        System.out.println("\t \t \t- Sous-marin (3 cases)");
-        System.out.println("\t \t \t- Torpilleur (2 cases)");
-        System.out.println();
-        System.out.println("\t \tLes navires doivent être placés horizontalement ou verticalement (jamais en diagonale).");
-        System.out.println("\t \tLes navires ne peuvent pas se chevaucher ni dépasser les bords de la grille.");
-        System.out.println();
-        System.out.println("\t3. Grille vide :");
-        System.out.println();
-        System.out.println("\t\tAvant de placer leurs navires, les joueurs peuvent consulter une grille vide pour planifier leur stratégie");
-        System.out.println();
-        System.out.println("Déroulement du jeu");
-        System.out.println();
-        System.out.println("\t1. Tour par tour\n");
-        System.out.println("\t \tChaque joueur joue à tour de rôle.\n" +
-                "\t \tÀ son tour, un joueur :\n\n" +
-                "\t \t \tDevine une position sur la grille ennemie (par exemple, B5).\n" +
-                "\t \t \tLe résultat est annoncé :\n\n" +
-                "\t \t \t \t- Touché : Un navire ennemi occupe cette case.\n" +
-                "\t \t \t \t- À l'eau : Cette case est vide.\n" +
-                "\t \t \t \t- Coulé : Si toutes les cases d’un navire sont touchées, ce navire est détruit."
-        );
-        System.out.println();
-        System.out.println("\t2. Grille cachée :");
-        System.out.println();
-        System.out.println("\t \tChaque joueur voit sa propre grille avec ses navires et les attaques ennemies");
-        System.out.println("\t \tLa grille de l’adversaire montre seulement les attaques réussies (Touché ou À l'eau).");
-        System.out.println();
-        System.out.println("Conditions de Victoire");
-        System.out.println();
-        System.out.println("\tLe jeu se termine dès qu'un joueur a coulé tous les navires de son adversaire.");
-        System.out.println("\tCe joueur est déclaré vainqueur.");
-        System.out.println();
-        System.out.println("Règles Supplémentaires");
-        System.out.println();
-        System.out.println("\t1. Validité des tirs :");
-        System.out.println();
-        System.out.println("\t\tUn joueur ne peut pas tirer deux fois sur la même case.");
-        System.out.println("\t\tSi cela se produit, il est averti, et il doit choisir une nouvelle position.");
-        System.out.println();
-        System.out.println("\t2. Stratégie de placement :");
-        System.out.println();
-        System.out.println("\t\tLes navires doivent être placés de manière stratégique pour éviter de révéler des schémas évidents à l’adversaire.");
-        System.out.println();
-        System.out.println("\t3. Visualisation");
-        System.out.println();
-        System.out.println("\t\tAprès chaque tour, la grille ennemie mise à jour est affichée avec les résultats des attaques (X pour touché, O pour à l'eau).");
-        System.out.println();
-        int choix=0;
-        System.out.println("1. Lancez une partie");
-        System.out.println("2. Quittez");
-        System.out.println();
-        System.out.print("=>  ");
-        choix = scanner.nextInt();
+        if (sMarinCoules) {
+            System.out.println("\nLe sous-marin a été coulé.");
+        }
 
-        switch (choix){
-            case 1:preparationPartie();break;
+        if (CTorpilleurCoules) {
+            System.out.println("\nLe Contre-Torpilleur a été coulé.");
+        }
+
+        if (torpilleurCoules) {
+            System.out.println("\nLe Torpilleur a été coulé.");
         }
     }
 
-    public static void espaceEntrePlacementJoueur(){
+    /**
+     * Vérifie si tous les navires d'un plateau sont coulés.
+     * - Parcourt le plateau pour détecter les cases contenant des parties de navires ('P', 'C', 'c', 'S', 'T').
+     * - Si au moins une case contient un navire, retourne false.
+     * - Retourne true si aucun navire n'est trouvé (tous coulés), false sinon.
+     */
+    public static boolean tousCoules(char[][] plateau){
+        for (int i = 0; i < plateau.length; i++) {
+            for (int j = 0; j < plateau[i].length; j++) {
+                if (plateau[i][j] == 'P' || plateau[i][j] == 'C' || plateau[i][j] == 'c' || plateau[i] [j] == 'S' || plateau[i][j] == 't' || plateau[i][j] == 'T'){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Insère un grand nombre de lignes vides pour nettoyer la console.
+     * - Affiche 200 lignes vides pour simuler un "nettoyage" de l'écran.
+     */
+
+    public static void sautDelignes(){
         for (int i = 0; i < 200; i++) {
             System.out.println();
         }
     }
-
-//    public static boolean gestionVictoire(char[][] plateauJoueur1, char[][] plateauJoueur2){
-//        if (tousCoulés(plateauJoueur2)){
-//            System.out.println("Victorie de " + GestionBatailleNaval.pseudoJoueur1);
-//            return true;
-//        }
-//        else if (tousCoulés(plateauJoueur1)) {
-//            System.out.println("Victorie de " + GestionBatailleNaval.pseudoJoueur2);
-//            return true;
-//        }
-//        else {
-//            return false;
-//        }
-//    }
 
 //    public static void placementAutomatiqueNavire(char[][] plateauJoueur1,char[][] plateauJoueur2){
 //        for (int i = 5; i > 0; i--) {
