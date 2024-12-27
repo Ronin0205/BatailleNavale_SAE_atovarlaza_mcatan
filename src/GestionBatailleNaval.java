@@ -24,7 +24,6 @@ public class GestionBatailleNaval {
 
         Methodes.generationDesPlateau(plateaujoueur1,plateaujoueur2, plateauTirJoueur1, plateauTirJoueur2);
         menu();
-
         Methodes.gestionTour(plateaujoueur1,plateaujoueur2, plateauTirJoueur1, plateauTirJoueur2);
 
     }
