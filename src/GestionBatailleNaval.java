@@ -4,8 +4,12 @@ public class GestionBatailleNaval {
 
     public static char[][] plateaujoueur1 = new char[10][10];
     public static char[][] plateaujoueur2 = new char[10][10];
-    public static char[][] plateauTirJoueur1 =new char[10][10];
-    public static char[][] plateauTirJoueur2 =new char[10][10];
+    public static char[][] plateauIA = new char[10][10];
+
+    public static char[][] plateauTirJoueur1 = new char[10][10];
+    public static char[][] plateauTirJoueur2 = new char[10][10];
+    public static char[][] plateauTirIA = new char[10][10];
+
 
     public static String pseudoJoueur1 = "";
     public static String pseudoJoueur2 = "";
@@ -20,6 +24,7 @@ public class GestionBatailleNaval {
 
         Methodes.generationDesPlateau(plateaujoueur1,plateaujoueur2, plateauTirJoueur1, plateauTirJoueur2);
         menu();
+
         Methodes.gestionTour(plateaujoueur1,plateaujoueur2, plateauTirJoueur1, plateauTirJoueur2);
 
     }
@@ -49,15 +54,16 @@ public class GestionBatailleNaval {
         System.out.println(marron + texte + reset);
         System.out.println();
         System.out.println("""
-                1. Démarer une partie
-                2. Redécouvrir les règles
-                3. Quitter
+                1. Démarer une partie joueur VS joueur
+                2. Démarer une partie joueur VS IA
+                3. Redécouvrir les règles
+                4. Quitter
                 """);
         System.out.println("Entrez votre choix");
         System.out.print("==>  ");
         String choix;
         choix = scanner.nextLine();
-        while ( !choix.equals("1") && !choix.equals("2") && !choix.equals("3")) {
+        while (!choix.equals("1") && !choix.equals("2") && !choix.equals("3") && !choix.equals("4")) {
             System.out.println("\nChoix non valide réessayer");
             System.out.print("==>  ");
             choix = scanner.nextLine();
@@ -65,8 +71,10 @@ public class GestionBatailleNaval {
 
         switch (choix) {
             case "1": Methodes.preparationPartie(); break;
-            case "2": reglesDuJeu(); break;
+            case "2": Methodes.preparationPartie(); break;
+            case "3": reglesDuJeu(); break;
         }
+
     }
 
     /**
