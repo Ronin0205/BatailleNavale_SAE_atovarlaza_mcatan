@@ -57,7 +57,7 @@ public class GestionBatailleNaval {
         System.out.print("==>  ");
         String choix;
         choix = scanner.nextLine();
-        while (!choix.equals("1") && !choix.equals("2") && !choix.equals("3")) {
+        while ( !choix.equals("1") && !choix.equals("2") && !choix.equals("3")) {
             System.out.println("\nChoix non valide réessayer");
             System.out.print("==>  ");
             choix = scanner.nextLine();
@@ -168,9 +168,14 @@ public class GestionBatailleNaval {
                 """);
         System.out.println("Entrez votre choix");
         System.out.print("==>  ");
-        int choix=0;
-        choix = scanner.nextInt();
-        if (choix == 1) {
+        String choix;
+        choix = scanner.nextLine();
+        while (!choix.equals("1") && !choix.equals("2")) {
+            System.out.println("\nChoix non valide réessayer");
+            System.out.print("==>  ");
+            choix = scanner.nextLine();
+        }
+        if (choix.equals("1")) {
             Methodes.sautDelignes();
             GestionBatailleNaval.gestionBataille();
         }
