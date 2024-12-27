@@ -2,9 +2,30 @@ import java.util.Scanner;
 public class Methodes {
     public static Scanner scanner = new Scanner(System.in);
 
-/**  Initialise les plateaux des joueurs et les plateaux de tir en remplissant
-    toutes les cases avec le caractère '~' (cellule vide)
- */
+    /**
+     * pour tester le placement des navire par l'ia
+     */
+    public static void main(String[] args) {
+        char[][]plateau = new char[10][10];
+        for (int ligne = 0; ligne < plateau.length; ligne++) {
+            for (int col = 0; col < plateau[ligne].length; col++) {
+                plateau[ligne][col] = '~';
+            }
+        }
+
+        afficherPlateau(plateau);
+
+        System.out.println();
+
+        placementNaviresIA(plateau);
+
+        afficherPlateau(plateau);
+        System.out.println("\nplacer par l'ia");
+    }
+
+    /**  Initialise les plateaux des joueurs et les plateaux de tir en remplissant
+     toutes les cases avec le caractère '~' (cellule vide)
+     */
     public static void generationDesPlateau(char[][] plateaujoueur1, char[][] plateaujoueur2, char[][] plateauTirJoueur1, char[][] plateauTirJoueur2) {
         for (int ligne = 0; ligne < plateaujoueur1.length; ligne++) {
             for (int col = 0; col < plateaujoueur1[ligne].length; col++) {
@@ -49,10 +70,10 @@ public class Methodes {
         System.out.println();
     }
 
-/**
- * Prépare la partie en demandant les pseudos des deux joueurs,
- * en vérifiant qu'ils sont différents, et en procédant à la phase
- * de placement des navires pour chaque joueur.*/
+    /**
+     * Prépare la partie en demandant les pseudos des deux joueurs,
+     * en vérifiant qu'ils sont différents, et en procédant à la phase
+     * de placement des navires pour chaque joueur.*/
     public static void preparationPartie(){
 
         System.out.println("\nJoueur 1 entrez votre pseudo :");
@@ -79,22 +100,25 @@ public class Methodes {
         sautDelignes();
     }
 
-/**
- * Permet à un joueur de placer ses navires sur son plateau.
- * - Demande la position (format "A1") et la direction (h/v).
- * - Vérifie et place chaque navire en s'assurant qu'il ne dépasse pas les limites ou ne chevauche pas d'autres navires.
- * - Répète jusqu'à un placement valide et affiche le plateau après chaque placement.
- */
+    /**
+     * Permet à un joueur de placer ses navires sur son plateau.
+     * - Demande la position (format "A1") et la direction (h/v).
+     * - Vérifie et place chaque navire en s'assurant qu'il ne dépasse pas les limites ou ne chevauche pas d'autres navires.
+     * - Répète jusqu'à un placement valide et affiche le plateau après chaque placement.
+     */
     public static void placementNavireJoueur(String joueur, char [][]plateau){
+        boolean ia = false;
         int[] tailleNavire = {5, 4, 3, 3, 2}; // Longueurs des bateaux
         int compteur=0;
         String typeNavire;
+        String position;
+        char direction;
+        int li;
+        int c;
+        boolean estplacer;
         for (int i=0; i< tailleNavire.length;i++) {
-            String position;
-            char direction;
-            int li;
-            int c;
-            boolean estplacer = false;
+
+            estplacer = false;
 
             switch (tailleNavire[i]){
                 case 5:typeNavire="le Porte-avion";break;
@@ -109,47 +133,57 @@ public class Methodes {
                 default:typeNavire="le navire";
             }
 
-            while (!estplacer) {
-
+            do{
                 do {
                     System.out.println(joueur + ", place " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
                     position = scanner.next().toUpperCase();
-                } while (position.length() > 3);
-
+                } while (position.length() >3 || position.length() < 2);
                 do {
                     System.out.println("sens ? (h/v)");
                     direction = scanner.next().toLowerCase().charAt(0);
                 }while (direction != 'v' && direction != 'h');
 
-                 li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
-                 c = position.charAt(0) - 'A';
+                li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
+                c = position.charAt(0) - 'A';
 
-                estplacer = placementNavire(plateau, tailleNavire[i],compteur, c, li, direction);
-                if (!estplacer) {
-                    System.out.println("Réessayez.\n");
-                    do{
-                        do {
-                            System.out.println(joueur + ", place " + typeNavire + " de taille " + tailleNavire[i] + " (format : A1) :");
-                            position = scanner.next().toUpperCase();
-                        } while (position.length() > 3);
+                estplacer = placementNavire(ia,plateau, tailleNavire[i],compteur, c, li, direction);
+            }while (!estplacer);
 
-                        do {
-                            System.out.println("sens ? (h/v)");
-                            direction = scanner.next().toLowerCase().charAt(0);
-                        }while (direction != 'v' && direction != 'h');
-
-                         li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
-                         c = position.charAt(0) - 'A';
-
-                        estplacer = placementNavire(plateau, tailleNavire[i],compteur, c, li, direction);
-                    }while (!estplacer);
-                }
                 compteur++;
-            }
             afficherPlateau(plateau);
         }
     }
 
+    public static void placementNaviresIA(char[][] plateau) {
+        boolean ia = true;
+        int[] tailleNavire = {5, 4, 3, 3, 2}; // Longueurs des bateaux
+        int compteur=0;
+        char direction;
+        int li;
+        int c;
+        double sens;
+
+        for (int i=0; i< tailleNavire.length;i++) {
+            boolean estplacer = false;
+
+                sens = Math.random();
+                if (sens < 0.5){
+                    direction = 'h';
+                }
+                else {
+                    direction = 'v';
+                }
+
+                do{
+                    li = (int)(Math.random() * 10);
+                    c = (int)(Math.random() * 10);
+                    estplacer = placementNavire(ia,plateau, tailleNavire[i],compteur, c, li, direction);
+                }while (!estplacer);
+
+                compteur++;
+
+        }
+    }
     /**
      * Place un navire sur le plateau de jeu si les conditions sont respectées.
      * - Vérifie que le navire ne dépasse pas les limites du plateau.
@@ -157,18 +191,21 @@ public class Methodes {
      * - Place le navire en fonction de sa taille et de sa direction ('h' ou 'v').
      * - retourne true si le placement est réussi, false sinon.
      */
-    public static boolean placementNavire(char[][] plateau, int taille, int compteurs, int c, int li, char direction){
+    public static boolean placementNavire(boolean ia, char[][] plateau, int taille, int compteurs, int c, int li, char direction){
 
         if ( ((plateau.length < li + taille) && (direction=='v')) || ((plateau[0].length < c + taille) && (direction == 'h'))  ){
-            System.out.println("Placement invalide!");
+            if (!ia){
+                System.out.println("Placement invalide!");
+            }
             return false;
         }
         else {
             // Vérification des collisions
             for (int i = 0; i < taille; i++) {
-                if ((direction == 'h' && plateau[li][c + i] != '~') ||
-                        (direction == 'v' && plateau[li + i][c] != '~')) {
-                    System.out.println("Collision détectée! Une case est déjà occupée.");
+                if ((direction == 'h' && plateau[li][c + i] != '~') || (direction == 'v' && plateau[li + i][c] != '~')) {
+                    if(!ia){
+                        System.out.println("Collision détectée! Une case est déjà occupée.");
+                    }
                     return false;
                 }
             }
@@ -462,24 +499,5 @@ public class Methodes {
             System.out.println();
         }
     }
-
-//    public static void placementAutomatiqueNavire(char[][] plateauJoueur1,char[][] plateauJoueur2){
-//        for (int i = 5; i > 0; i--) {
-//            int li = (int)(Math.random()*(10-1+1)+1);
-//            int c = (int)(Math.random()*(10-1+1)+1);
-//            int direction = (int)(Math.random()*1);
-//
-//            if (direction == 0){
-//                placementNavire(plateauJoueur1, i , c, li, 'h');
-//                placementNavire(plateauJoueur2, i , c, li, 'h');
-//            }
-//            else{
-//                placementNavire(plateauJoueur1, i , c, li, 'v');
-//                placementNavire(plateauJoueur2, i , c, li, 'v');
-//            }
-//        }
-//        afficherPlateau(plateauJoueur1);
-//        afficherPlateau(plateauJoueur2);
-//    }
 
 }
