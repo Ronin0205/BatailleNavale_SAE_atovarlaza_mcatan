@@ -124,11 +124,12 @@ public class Methodes {
                 case 5:typeNavire="le Porte-avion";break;
                 case 4:typeNavire="le Croiseur";break;
                 case 3:if (compteur==2){
-                    typeNavire="le Contre-torpilleur";break;
+                    typeNavire="le Contre-torpilleur";
                 }
                 else {
-                    typeNavire="le Sous-marin";break;
+                    typeNavire="le Sous-marin";
                 }
+                    break;
                 case 2:typeNavire="le torpilleur";break;
                 default:typeNavire="le navire";
             }
@@ -149,7 +150,7 @@ public class Methodes {
                 estplacer = placementNavire(ia,plateau, tailleNavire[i],compteur, c, li, direction);
             }while (!estplacer);
 
-                compteur++;
+            compteur++;
             afficherPlateau(plateau);
         }
     }
@@ -162,25 +163,25 @@ public class Methodes {
         int li;
         int c;
         double sens;
+        boolean estplacer;
 
         for (int i=0; i< tailleNavire.length;i++) {
-            boolean estplacer = false;
 
-                sens = Math.random();
-                if (sens < 0.5){
-                    direction = 'h';
-                }
-                else {
-                    direction = 'v';
-                }
+            sens = Math.random();
+            if (sens < 0.5){
+                direction = 'h';
+            }
+            else {
+                direction = 'v';
+            }
 
-                do{
-                    li = (int)(Math.random() * 10);
-                    c = (int)(Math.random() * 10);
-                    estplacer = placementNavire(ia,plateau, tailleNavire[i],compteur, c, li, direction);
-                }while (!estplacer);
+            do{
+                li = (int)(Math.random() * 10);
+                c = (int)(Math.random() * 10);
+                estplacer = placementNavire(ia,plateau, tailleNavire[i],compteur, c, li, direction);
+            }while (!estplacer);
 
-                compteur++;
+            compteur++;
 
         }
     }
@@ -299,8 +300,8 @@ public class Methodes {
                 System.out.println("\nTour de " + GestionBatailleNaval.pseudoJoueur2 + ": ");
             }
 
+            System.out.println();
             if (i % 2 != 0){
-                System.out.println();
                 afficherPlateau(plateauJoueur2cachee);
                 toucher = gestionTir(plateauJoueur2, plateauJoueur2cachee);
                 afficherPlateau(plateauJoueur2cachee);
@@ -313,7 +314,6 @@ public class Methodes {
                 affichageDesNaviresCoules(plateauJoueur2);
             }
             else {
-                System.out.println();
                 afficherPlateau(plateauJoueur1cachee);
                 toucher = gestionTir(plateauJoueur1,plateauJoueur1cachee);
                 afficherPlateau(plateauJoueur1cachee);
@@ -352,7 +352,7 @@ public class Methodes {
         do {
             System.out.println("Entrez tir (format : A1): ");
             position = scanner.next().toUpperCase();
-        }while (position.length() > 3);
+        }while (position.length() > 3 || position.length() < 2);
 
 
         int li = Integer.parseInt(position.substring(1)) - 1; // converti "A1" en indice : position.substring(1) permet d'avoir "1" puis Integer.parseInt() convertit
